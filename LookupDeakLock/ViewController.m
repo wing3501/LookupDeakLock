@@ -36,17 +36,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-//    [ViewController checkIfIsCircleWithThreadDescDic:nil threadWaitDic:[@{
-//        @4:@[@5],
-//        @1:@[@2],
-//        @3:@[@1],
-//        @2:@[@3],
-//        @6:@[@7]
-//    } mutableCopy]];
-//    
-//    
-//    return;
-    
     _lockA = [[NSLock alloc]init];
     _lockA.name = @"I am LockA";
     
@@ -70,7 +59,7 @@
     
     [self testWaitNSLock];
     
-//    [self testThreeLock];
+
     
     
 //    _holdlockSemaphoreThread = [[NSThread alloc]initWithTarget:self selector:@selector(holdlockSemaphore) object:nil];
@@ -90,6 +79,10 @@
     _holdLockBThread = [[NSThread alloc]initWithTarget:self selector:@selector(holdLockB) object:nil];
     [_holdLockBThread setName:@"I hold LockB!"];
     [_holdLockBThread start];
+    
+    _holdLockCThread = [[NSThread alloc]initWithTarget:self selector:@selector(holdLockC) object:nil];
+    [_holdLockCThread setName:@"I hold LockC!"];
+    [_holdLockCThread start];
 }
 
 - (void)testDoManyWork {
@@ -125,9 +118,20 @@
     NSLog(@"BThread hold lockB success");
     sleep(2);
     
-    NSLog(@"BThread want lockA");
+    NSLog(@"BThread want lockC");
+    [_lockC lock];
+    NSLog(@"BThread hold lockC success");
+}
+
+- (void)holdLockC {
+    [_lockC lock];
+    
+    NSLog(@"CThread hold lockC success");
+    sleep(2);
+    
+    NSLog(@"CThread want lockA");
     [_lockA lock];
-    NSLog(@"BThread hold lockA success");
+    NSLog(@"CThread hold lockA success");
 }
 
 - (void)doManyWork {
